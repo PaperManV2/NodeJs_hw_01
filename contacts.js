@@ -4,9 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const contactsPath = path.join(__dirname, "db", "contacts.json");
 
 const contacts = JSON.parse(fs.readFileSync(contactsPath, "utf8"));
-// const contacts = fs.readFileSync(contactsPath, "utf8");
 
-console.log(contacts);
 function listContacts() {
   result = contacts.map((contact) => {
     return {
@@ -38,7 +36,24 @@ function getContactById(contactId) {
 
 function removeContact(contactId) {
   // ...twój kod
-  return;
+
+  const data = contacts.filter((contact) => contact.id !== contactId);
+
+  a = data;
+  b = contacts;
+
+  if (JSON.stringify(a) === JSON.stringify(b)) {
+    console.log("Sorry we could find any contact with this ID");
+    return;
+  }
+
+  fs.writeFile(contactsPath, JSON.stringify(data, null, 2), (error) => {
+    if (error) {
+      console.error("Błąd usunięcia kontaktów:", error);
+      return;
+    }
+    console.log("Kontakt został usunięty prawidłowo ;)");
+  });
 }
 
 function addContact(name, email, phone) {
@@ -46,7 +61,7 @@ function addContact(name, email, phone) {
   // wykorzystaj uuidv4
 
   const newContact = {
-    id: 1,
+    id: uuidv4(),
     name,
     email,
     phone,

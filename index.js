@@ -1,9 +1,39 @@
 const basicFunctions = require("./contacts");
+const { Command } = require("commander");
 
-// basicFunctions.listContacts();
+const program = new Command();
+program
+  .storeOptionsAsProperties(true)
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
+program.parse(process.argv);
 
-// basicFunctions.getContactById("Z5sbDlS7pCzNsnAHLtDJd");
+const argv = program.opts();
 
-// basicFunctions.removeContact("AeHIrLTr6JkxGE6SN-0Rw");
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      basicFunctions.listContacts();
+      break;
 
-// basicFunctions.addContact("Jhon figlestorm", "ho@wp.pl", "(992) 206-3324");
+    case "get":
+      basicFunctions.getContactById(id);
+      break;
+
+    case "add":
+      basicFunctions.addContact(name, email, phone);
+      break;
+
+    case "remove":
+      basicFunctions.removeContact(id);
+      break;
+
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);
